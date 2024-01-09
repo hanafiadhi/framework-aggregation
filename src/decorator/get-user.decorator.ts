@@ -1,3 +1,4 @@
+// Digunakan untuk mendapatkan user yang login
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const GetUser = createParamDecorator(

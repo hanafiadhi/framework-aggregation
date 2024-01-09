@@ -6,10 +6,10 @@ export default registerAs(
   (): Record<string, any> => ({
     config: {
       info: {
-        title: 'Framework Aggregation',
+        title: 'App Aggregation',
       },
       swaggerUI: getBoolean(process.env.SWAGGER_ENABLED) || false,
-      documentationPath: '/framework/docs',
+      documentationPath: '/app/docs',
     },
     options: {
       apisSorter: 'alpha',

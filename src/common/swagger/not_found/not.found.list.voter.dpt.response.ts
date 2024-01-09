@@ -1,3 +1,4 @@
+// Contoh hasil swagger
 import { ApiProperty } from '@nestjs/swagger';
 
 export class listVoterDptNearbyResponseNotFound {

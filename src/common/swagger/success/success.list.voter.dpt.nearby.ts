@@ -1,3 +1,4 @@
+// Contoh exception swagger
 import { ApiProperty } from '@nestjs/swagger';
 
 export class listVoterDptNearbyResponse {
