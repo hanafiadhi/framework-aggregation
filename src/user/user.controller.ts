@@ -1,35 +1,37 @@
-import { Controller } from '@nestjs/common';
+import { Controller,Get, Delete, Post,Param, Patch, Query } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MongoIdValidationPipe } from 'src/pipes/validator/mongoid.validator';
+import { PaginationQueryDTO } from './dto/pagination.dto';
 
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @MessagePattern('createUser')
+  @Post('create')
   create(@Payload() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @MessagePattern('findAllUser')
-  findAll() {
-    return this.userService.findAll();
+  @Get('list')
+  findAll(@Query() query: PaginationQueryDTO) {
+    return this.userService.findAll(query);
   }
 
-  @MessagePattern('findOneUser')
-  findOne(@Payload() id: number) {
+  @Get('/:id')
+  findOne(@Param('id' , MongoIdValidationPipe) id: number) {
     return this.userService.findOne(id);
   }
 
-  @MessagePattern('updateUser')
-  update(@Payload() updateUserDto: UpdateUserDto) {
+  @Patch('update/:id')
+  update(@Param('id', MongoIdValidationPipe) id: string, @Payload() updateUserDto: UpdateUserDto) {
     return this.userService.update(updateUserDto.id, updateUserDto);
   }
 
-  @MessagePattern('removeUser')
-  remove(@Payload() id: number) {
+  @Delete('delete/:id')
+  remove(@Param('id' , MongoIdValidationPipe) id: string) {
     return this.userService.remove(id);
   }
 }

@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { firstValueFrom } from 'rxjs';
 import { USER } from 'src/common/constants/services';
 import { ClientProxy } from '@nestjs/microservices';
+import { PaginationQueryDTO } from './dto/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -11,14 +12,15 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const user = await firstValueFrom(
-      this.clientUser.send('CREATE:USER', createUserDto),
+      this.clientUser.send('create-user', createUserDto),
     );
 
     return user;
   }
 
-  findAll() {
-    return `This action returns all user`;
+    async findAll(payload: PaginationQueryDTO) {
+     const getListUser = await firstValueFrom(this.clientUser.send('get-user-list',payload));
+     return getListUser;
   }
 
   findOne(id: number) {
@@ -29,7 +31,7 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} user`;
   }
 }
