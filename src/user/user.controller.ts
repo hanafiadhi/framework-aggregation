@@ -1,4 +1,4 @@
-import { Controller,Get, Delete, Post,Param, Patch, Query } from '@nestjs/common';
+import { Controller,Get, Delete, Post,Param, Patch, Query, Body } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,7 +11,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
-  create(@Payload() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
@@ -21,13 +21,13 @@ export class UserController {
   }
 
   @Get('/:id')
-  findOne(@Param('id' , MongoIdValidationPipe) id: number) {
+  findOne(@Param('id' , MongoIdValidationPipe) id: string) {
     return this.userService.findOne(id);
   }
 
   @Patch('update/:id')
-  update(@Param('id', MongoIdValidationPipe) id: string, @Payload() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto.id, updateUserDto);
+  update(@Param('id', MongoIdValidationPipe) userId: string, @Payload() updateUserDto: UpdateUserDto) {
+    return this.userService.update(userId, updateUserDto);
   }
 
   @Delete('delete/:id')
