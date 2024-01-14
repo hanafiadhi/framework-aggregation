@@ -1,9 +1,13 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class PaginationQueryDTO {
-    @IsNotEmpty()
-    page: number;
+  @IsNotEmpty()
+  page: number;
 
-    @IsNotEmpty()
-    perPage: number;
+  @IsNotEmpty()
+  perPage: number;
+
+  @IsOptional()
+  @IsString()
+  name: string;
 }

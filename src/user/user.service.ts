@@ -20,25 +20,29 @@ export class UserService {
 
   async findAll(payload: PaginationQueryDTO) {
     const getListUser = await firstValueFrom(
-       this.clientUser.send('get-user-list', payload)
+      this.clientUser.send('get-user-list', payload),
     );
     return getListUser;
-}
+  }
 
   async findOne(userId: string) {
-     const getUser = await firstValueFrom(
-       this.clientUser.send("get-user",userId)
+    const getUser = await firstValueFrom(
+      this.clientUser.send('get-user', userId),
     );
-     return getUser;
+    return getUser;
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {
-     const updateUser = await firstValueFrom(this.clientUser.send('update-user' , { data:updateUserDto, userId }))
-     return updateUser;
+    const updateUser = await firstValueFrom(
+      this.clientUser.send('update-user', { data: updateUserDto, userId }),
+    );
+    return updateUser;
   }
 
   async remove(userId: string) {
-     const deleteUser = await firstValueFrom(this.clientUser.send('delete-user' , userId));
-     return deleteUser;
+    const deleteUser = await firstValueFrom(
+      this.clientUser.send('delete-user', userId),
+    );
+    return deleteUser;
   }
 }

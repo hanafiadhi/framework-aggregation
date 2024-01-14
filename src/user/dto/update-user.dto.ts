@@ -1,43 +1,44 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
-import { IsNotEmpty,IsString,IsMongoId } from 'class-validator';
+import { IsNotEmpty, IsString, IsMongoId, IsOptional } from 'class-validator';
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-  @IsNotEmpty()
+  @IsOptional()
+  @IsOptional()
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   age: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
   province: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   province_name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
   city: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   city_name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
   district: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   district_name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
   sub_district: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   sub_district_name: string;
 }
