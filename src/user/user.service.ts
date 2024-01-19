@@ -5,12 +5,15 @@ import { firstValueFrom } from 'rxjs';
 import { USER } from 'src/common/constants/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { PaginationQueryDTO } from './dto/pagination.dto';
+import { CreateUserDataZodDTO } from './dto/create-user.zod.dto';
+import { QueryUserListZodDTO } from './dto/query-user.zod.dto';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(USER) private readonly clientUser: ClientProxy) {}
 
-  async create(createUserDto: CreateUserDto) {
+   
+  async create(createUserDto: CreateUserDataZodDTO) {
     const user = await firstValueFrom(
       this.clientUser.send('create-user', createUserDto),
     );
@@ -18,7 +21,7 @@ export class UserService {
     return user;
   }
 
-  async findAll(payload: PaginationQueryDTO) {
+  async findAll(payload: QueryUserListZodDTO) {
     const getListUser = await firstValueFrom(
       this.clientUser.send('get-user-list', payload),
     );
