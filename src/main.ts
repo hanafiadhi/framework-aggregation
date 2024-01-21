@@ -5,10 +5,17 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as basicAuth from 'express-basic-auth';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentSwagger } from './common/swagger/document/document';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
   const configService = app.get(ConfigService);
   app.enableCors();
 
@@ -16,9 +23,6 @@ async function bootstrap() {
   const appName: string = configService.get<string>('app.appName');
   const host = configService.get('app.host');
   const port = configService.get('app.port.api');
-  const localUri = configService.get<any>('swagger.localUri');
-  const develompentUri = configService.get<any>('swagger.develompentUri');
-  const productionUri = configService.get<any>('swagger.productionUri');
 
   const passSwagger = process.env.SWAGGER_PASSWORD || 'bismillah';
   app.use(
@@ -31,28 +35,12 @@ async function bootstrap() {
     }),
   );
   const swaggerConfig: any = configService.get<any>('swagger.config');
-
   if (swaggerConfig.swaggerUI === true) {
-    const swaggerConfigBuilder = new DocumentBuilder()
-      .setTitle(swaggerConfig.info.title)
-      .setVersion(swaggerConfig.info.version)
-      .addBearerAuth(
-        {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-          name: 'JWT',
-          description: 'Enter JWT token',
-          in: 'header',
-        },
-        'JWTAuth',
-      )
-      .addServer(`${localUri}`, 'Local Server')
-      .addServer(`${develompentUri}`, 'Development Server')
-      .addServer(`${productionUri}`, 'Production Server')
-      .build();
+    const document = SwaggerModule.createDocument(
+      app,
+      new DocumentSwagger(configService).Builder(),
+    );
 
-    const document = SwaggerModule.createDocument(app, swaggerConfigBuilder);
     const swaggerOptions = configService.get<any>('plugin.swagger.options');
     SwaggerModule.setup(swaggerConfig.documentationPath, app, document, {
       swaggerOptions: swaggerOptions,

@@ -6,9 +6,9 @@ export default registerAs(
     appEnv: process.env.APP_ENV || 'dev',
     host: process.env.APP_HOST || '0.0.0.0',
     port: {
-      api: process.env.APP_PORT || 9000,
+      api: process.env.APP_PORT || 3000,
     },
-    appName: process.env.APP_NAME || 'Framework-aggregation',
+    appName: process.env.APP_NAME || 'template-aggregation',
     apiPrefix: process.env.API_PREFIX || '/api/',
   }),
 );
