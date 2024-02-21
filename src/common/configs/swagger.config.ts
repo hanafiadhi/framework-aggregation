@@ -25,8 +25,11 @@ export default registerAs(
         // addServer('https://api.example.com', 'Production Server')
         // addServer('http://localhost:3000', 'Local Server')
       },
-      swaggerUI: getBoolean(process.env.SWAGGER_ENABLED) || true,
-      documentationPath: '/framework/docs',
+      swaggerUI: getBoolean(process.env.SWAGGER_ENABLED) || false,
+      documentationPath: '/user/docs',
+      documentationJson: '/user/docs-json',
+      swaggerPassword: process.env.SWAGGER_PASSWORD,
+      swaggerUser: process.env.SWAGGER_USER,
     },
     options: {
       apisSorter: 'alpha',

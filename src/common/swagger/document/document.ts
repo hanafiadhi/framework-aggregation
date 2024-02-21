@@ -38,9 +38,7 @@ export class DocumentSwagger implements IDocumentSwagger {
     this.setDescription = configService.get<string>(
       'swagger.config.info.setDescription',
     );
-    this.title = configService.get<string>(
-      'swagger.config.info.setDescription',
-    );
+    this.title = configService.get<string>('swagger.config.info.title');
 
     this.localUrl = configService.get<string>('swagger.localUrl');
     this.develompentUrl = configService.get<string>('swagger.develompentUrl');

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { firstValueFrom } from 'rxjs';
-import { USER_CONSUMER } from 'src/common/constants/services';
+import { USER_QUEUE } from 'src/common/constants/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { PaginationQueryDTO } from './dto/pagination.dto';
 import { CreateUserDataZodDTO } from './dto/create-user.zod.dto';
@@ -10,9 +10,7 @@ import { QueryUserListZodDTO } from './dto/query-user.zod.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @Inject(USER_CONSUMER) private readonly clientUser: ClientProxy,
-  ) {}
+  constructor(@Inject(USER_QUEUE) private readonly clientUser: ClientProxy) {}
 
   async create(createUserDto: CreateUserDataZodDTO) {
     const user = await firstValueFrom(

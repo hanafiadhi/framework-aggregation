@@ -1,1 +1,1 @@
-export const USER_CONSUMER = 'USER';
+export const USER_QUEUE = 'USER';
