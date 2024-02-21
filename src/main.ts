@@ -22,19 +22,19 @@ async function bootstrap() {
       //   transformOptions: {
       //     enableImplicitConversion: true,
       //   },
-      //   exceptionFactory: (validationErrors: ValidationError[] = []) => {
-      //     console.log(validationErrors);
-      //     try {
-      //       return new BadRequestException(
-      //         validationErrors.map((error) => ({
-      //           field: error.property,
-      //           error: Object.values(error.constraints).join(', '),
-      //         })),
-      //       );
-      //     } catch (error) {
-      //       return new InternalServerErrorException(error);
-      //     }
-      //   },
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        console.log(validationErrors);
+        try {
+          return new BadRequestException(
+            validationErrors.map((error) => ({
+              field: error.property,
+              error: Object.values(error.constraints).join(', '),
+            })),
+          );
+        } catch (error) {
+          return new InternalServerErrorException(error);
+        }
+      },
     }),
   );
   const configService = app.get(ConfigService);
