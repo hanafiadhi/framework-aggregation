@@ -12,61 +12,76 @@ import {
   ValidateNested,
 } from 'class-validator';
 class User {
-  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsInt()
   age: number;
 }
 
 export class CreateUserDto {
-  @ApiProperty({ isArray: true, type: User })
   @IsNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => User)
   users: User[];
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
   province: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   province_name: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
   city: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   city_name: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
   district: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   district_name: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
   sub_district: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   sub_district_name: string;
+}
+
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+const hobbySchema = z
+  .object({
+    id: z.string(),
+    name: z.string().min(2),
+  })
+  .refine((obj) => Object.keys(obj).length > 0, {
+    message: 'Hobby object must not be empty',
+  });
+
+// Definisikan skema untuk DTO (Data Transfer Object)
+const MyDtoSchema = z.object({
+  username: z.string().min(2).max(100),
+  hobby: z.array(hobbySchema).min(1),
+});
+
+// Definisikan tipe untuk DTO
+type MyDto = z.infer<typeof MyDtoSchema>;
+
+export { MyDtoSchema, MyDto };
+export class CreateUserDataZodDTO extends createZodDto(MyDtoSchema) {
+  username: string;
+  hobby: any;
 }

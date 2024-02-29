@@ -8,24 +8,40 @@ import {
   Query,
   Body,
   UsePipes,
+  Version,
+  UseGuards,
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, MyDto, MyDtoSchema } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MongoIdValidationPipe } from 'src/pipes/validator/mongoid.validator';
 import { PaginationQueryDTO } from './dto/pagination.dto';
-import { CreateUserDataZodDTO } from './dto/create-user.zod.dto';
+
 import { ZodValidationPipe } from 'nestjs-zod';
 import { QueryUserListZodDTO } from './dto/query-user.zod.dto';
+import { AccessTokenGuard } from 'src/guard/acccess-token.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { ActiveUser } from 'src/decorator/active-user.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  //   @UsePipes(ZodValidationPipe)
+  @ApiBearerAuth('jwt')
+  @UseGuards(AccessTokenGuard)
+  @Version('1')
   @Post('create')
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@ActiveUser() user: any) {
+    return user;
+    // console.log(createUserDto);
+    // return this.userService.create(createUserDto);
+  }
+  @Version('2')
+  @UsePipes(new ZodValidationPipe(MyDtoSchema))
+  @Post('create')
+  createv2(@Body() createUserDto: MyDto) {
+    return createUserDto;
     console.log(createUserDto);
     return this.userService.create(createUserDto);
   }

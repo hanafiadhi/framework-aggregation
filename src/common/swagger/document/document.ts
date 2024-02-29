@@ -58,7 +58,7 @@ export class DocumentSwagger implements IDocumentSwagger {
           description: 'Enter JWT token to access endpoint',
           in: 'header',
         },
-        'JWTAuth',
+        'jwt',
       )
       .addServer(`${this.localUrl}`, 'Local Server')
       .addServer(`${this.develompentUrl}`, 'Development Server')

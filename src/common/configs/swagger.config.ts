@@ -1,5 +1,4 @@
 import { registerAs } from '@nestjs/config';
-import { getBoolean } from 'src/common/utilities/common.utility';
 
 export default registerAs(
   'swagger',
@@ -25,7 +24,7 @@ export default registerAs(
         // addServer('https://api.example.com', 'Production Server')
         // addServer('http://localhost:3000', 'Local Server')
       },
-      swaggerUI: getBoolean(process.env.SWAGGER_ENABLED) || false,
+      swaggerUI: process.env.SWAGGER_ENABLED == 'true' ? true : false,
       documentationPath: '/user/docs',
       documentationJson: '/user/docs-json',
       swaggerPassword: process.env.SWAGGER_PASSWORD,

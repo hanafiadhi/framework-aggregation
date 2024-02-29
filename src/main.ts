@@ -4,12 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as basicAuth from 'express-basic-auth';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-  ValidationError,
-  ValidationPipe,
-} from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentSwagger } from './common/swagger/document/document';
 
 async function bootstrap() {
@@ -19,24 +14,11 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      //   transformOptions: {
-      //     enableImplicitConversion: true,
-      //   },
-      exceptionFactory: (validationErrors: ValidationError[] = []) => {
-        console.log(validationErrors);
-        try {
-          return new BadRequestException(
-            validationErrors.map((error) => ({
-              field: error.property,
-              error: Object.values(error.constraints).join(', '),
-            })),
-          );
-        } catch (error) {
-          return new InternalServerErrorException(error);
-        }
-      },
     }),
   );
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
   const configService = app.get(ConfigService);
   const env: string = configService.get<string>('app.appEnv');
   const appName: string = configService.get<string>('app.appName');
