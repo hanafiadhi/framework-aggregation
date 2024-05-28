@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { firstValueFrom } from 'rxjs';
 import { USER_QUEUE } from 'src/common/constants/services';
@@ -11,8 +10,6 @@ export class UserService {
   constructor(@Inject(USER_QUEUE) private readonly clientUser: ClientProxy) {}
 
   async create(createUserDto: any) {
-    console.log(createUserDto);
-
     const user = await firstValueFrom(
       this.clientUser.send('create-user', createUserDto),
     );

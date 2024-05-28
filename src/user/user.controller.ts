@@ -20,15 +20,20 @@ import { PaginationQueryDTO } from './dto/pagination.dto';
 
 import { AccessTokenGuard } from 'src/guard/acccess-token.guard';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiCreatedResponse,
   ApiExcludeEndpoint,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { ActiveUser } from 'src/decorator/active-user.decorator';
+import { UserResSuccesCreate } from '../common/swagger/api/respone/login.respone';
+import { ErrorBadRequestExecption } from '../common/swagger/api/respone/response.error';
 
-@ApiBearerAuth('jwt')
-@UseGuards(AccessTokenGuard)
+// @ApiBearerAuth('jwt')
+// @UseGuards(AccessTokenGuard)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -40,6 +45,8 @@ export class UserController {
     // return this.userService.create(createUserDto);
   }
   @Version('1')
+  @ApiCreatedResponse({ type: UserResSuccesCreate })
+  @ApiBadRequestResponse({ type: ErrorBadRequestExecption })
   @Post('create')
   createv2(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);

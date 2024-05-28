@@ -13,59 +13,11 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-class User {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
-  @IsNotEmpty()
-  @IsInt()
-  age: number;
-}
-
-// export class CreateUserDto {
-//   @IsNotEmpty()
-//   @ValidateNested({ each: true })
-//   @Type(() => User)
-//   users: User[];
-
-//   @IsNotEmpty()
-//   @IsMongoId()
-//   province: string;
-
-//   @IsNotEmpty()
-//   @IsString()
-//   province_name: string;
-
-//   @IsNotEmpty()
-//   @IsMongoId()
-//   city: string;
-
-//   @IsNotEmpty()
-//   @IsString()
-//   city_name: string;
-
-//   @IsNotEmpty()
-//   @IsMongoId()
-//   district: string;
-
-//   @IsNotEmpty()
-//   @IsString()
-//   district_name: string;
-
-//   @IsNotEmpty()
-//   @IsMongoId()
-//   sub_district: string;
-
-//   @IsNotEmpty()
-//   @IsString()
-//   sub_district_name: string;
-// }
-
 export class CreateUserDto {
   @ApiProperty({
     description: 'silahkan masukan username yang akan di gunakan untuk login',
     example: '081234567890123',
+    uniqueItems: true,
   })
   @IsNotEmpty()
   @IsString()
