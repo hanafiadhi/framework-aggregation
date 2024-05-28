@@ -9,6 +9,8 @@ import {
   IsNotEmpty,
   IsObject,
   IsString,
+  MaxLength,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
 class User {
@@ -21,67 +23,87 @@ class User {
   age: number;
 }
 
+// export class CreateUserDto {
+//   @IsNotEmpty()
+//   @ValidateNested({ each: true })
+//   @Type(() => User)
+//   users: User[];
+
+//   @IsNotEmpty()
+//   @IsMongoId()
+//   province: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   province_name: string;
+
+//   @IsNotEmpty()
+//   @IsMongoId()
+//   city: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   city_name: string;
+
+//   @IsNotEmpty()
+//   @IsMongoId()
+//   district: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   district_name: string;
+
+//   @IsNotEmpty()
+//   @IsMongoId()
+//   sub_district: string;
+
+//   @IsNotEmpty()
+//   @IsString()
+//   sub_district_name: string;
+// }
+
 export class CreateUserDto {
-  @IsNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => User)
-  users: User[];
-
-  @IsNotEmpty()
-  @IsMongoId()
-  province: string;
-
-  @IsNotEmpty()
-  @IsString()
-  province_name: string;
-
-  @IsNotEmpty()
-  @IsMongoId()
-  city: string;
-
-  @IsNotEmpty()
-  @IsString()
-  city_name: string;
-
-  @IsNotEmpty()
-  @IsMongoId()
-  district: string;
-
-  @IsNotEmpty()
-  @IsString()
-  district_name: string;
-
-  @IsNotEmpty()
-  @IsMongoId()
-  sub_district: string;
-
-  @IsNotEmpty()
-  @IsString()
-  sub_district_name: string;
-}
-
-import { createZodDto } from 'nestjs-zod';
-import { z } from 'zod';
-const hobbySchema = z
-  .object({
-    id: z.string(),
-    name: z.string().min(2),
+  @ApiProperty({
+    description: 'silahkan masukan username yang akan di gunakan untuk login',
+    example: '081234567890123',
   })
-  .refine((obj) => Object.keys(obj).length > 0, {
-    message: 'Hobby object must not be empty',
-  });
-
-// Definisikan skema untuk DTO (Data Transfer Object)
-const MyDtoSchema = z.object({
-  username: z.string().min(2).max(100),
-  hobby: z.array(hobbySchema).min(1),
-});
-
-// Definisikan tipe untuk DTO
-type MyDto = z.infer<typeof MyDtoSchema>;
-
-export { MyDtoSchema, MyDto };
-export class CreateUserDataZodDTO extends createZodDto(MyDtoSchema) {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(10)
+  @MaxLength(13)
   username: string;
-  hobby: any;
+
+  @ApiProperty({
+    required: true,
+    description: 'Silahkan masukan password nda',
+    example: 'gundamRx70',
+    minimum: 8,
+  })
+  @IsNotEmpty()
+  @MinLength(8)
+  password: string;
+
+  @ApiProperty({
+    isArray: true,
+    required: true,
+    type: String,
+    example: ['ada', 'tiada', 'ada'],
+  })
+  @IsNotEmpty({ each: true })
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  role: string[];
+
+  @ApiProperty({
+    isArray: true,
+    required: true,
+    type: String,
+    example: ['ada', 'tiada', 'ada'],
+  })
+  @IsNotEmpty({ each: true })
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  applications: string[];
 }

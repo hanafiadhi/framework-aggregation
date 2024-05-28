@@ -5,8 +5,8 @@ export default registerAs(
   (): Record<string, any> => ({
     config: {
       info: {
-        title: '{Grouping by Repo}-{ngikutin kata}-Aggregation',
-        setDescription: 'Deskripsi Aplikasi Anda',
+        title: 'PDP User Aggregation',
+        setDescription: `Fitur ini memungkinkan aplikasi untuk menambahkan pengguna baru ke sistem. Data pengguna seperti nama, email, dan password akan diterima dan disimpan ke dalam database setelah melalui proses validasi dan hashing password untuk keamanan.        `,
         setVersion: '1.0',
         setTermsOfService: 'https://example.com/terms',
         setContact: `'John Doe', 'john@example.com', 'https://example.com/contact'`,

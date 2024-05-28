@@ -11,6 +11,8 @@ export class UserService {
   constructor(@Inject(USER_QUEUE) private readonly clientUser: ClientProxy) {}
 
   async create(createUserDto: any) {
+    console.log(createUserDto);
+
     const user = await firstValueFrom(
       this.clientUser.send('create-user', createUserDto),
     );
