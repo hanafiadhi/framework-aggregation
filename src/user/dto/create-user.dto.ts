@@ -26,6 +26,15 @@ export class CreateUserDto {
   username: string;
 
   @ApiProperty({
+    description: 'orang yang menyewa',
+    example: 'PDPxxxx',
+    uniqueItems: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  tenant_id: string;
+
+  @ApiProperty({
     required: true,
     description: 'Silahkan masukan password nda',
     example: 'gundamRx70',
