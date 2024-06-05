@@ -7,6 +7,6 @@ export class MongoIdValidationPipe implements PipeTransform {
     if (Types.ObjectId.isValid(value)) {
       return value;
     }
-    throw new BadRequestException('Must Be Mongo ID');
+    throw new BadRequestException('Parameter salah');
   }
 }

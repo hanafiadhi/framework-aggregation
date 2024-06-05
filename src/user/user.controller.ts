@@ -5,10 +5,10 @@ import {
   Post,
   Param,
   Patch,
-  Query,
   Body,
-  UsePipes,
   Version,
+  Res,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Payload } from '@nestjs/microservices';
@@ -16,24 +16,33 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MongoIdValidationPipe } from 'src/pipes/validator/mongoid.validator';
-import { PaginationQueryDTO } from './dto/pagination.dto';
 
 import { AccessTokenGuard } from 'src/guard/acccess-token.guard';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiBody,
   ApiCreatedResponse,
-  ApiExcludeEndpoint,
+  ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ActiveUser } from 'src/decorator/active-user.decorator';
-import { UserResSuccesCreate } from '../common/swagger/api/respone/login.respone';
-import { ErrorBadRequestExecption } from '../common/swagger/api/respone/response.error';
+import { UserResSuccesCreate } from '../common/swagger/api/respone/user.respone';
+import {
+  ErrorBadRequestExecption,
+  ErrorNotFoundExeption,
+} from '../common/swagger/api/respone/response.error';
+import { Response } from 'express';
+import {
+  DeletingData,
+  Pagination,
+} from '../common/swagger/api/respone/response.success';
 
-// @ApiBearerAuth('jwt')
-// @UseGuards(AccessTokenGuard)
+@ApiBearerAuth('jwt')
+@UseGuards(AccessTokenGuard)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -45,29 +54,71 @@ export class UserController {
     // return this.userService.create(createUserDto);
   }
   @Version('1')
+  @ApiOperation({ summary: 'membuat user' })
   @ApiCreatedResponse({ type: UserResSuccesCreate })
   @ApiBadRequestResponse({ type: ErrorBadRequestExecption })
-  @Post('create')
+  @Post()
   createv2(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @ApiExcludeEndpoint()
-  @Get('list')
-  findAll(@ActiveUser() user: any) {
-    return user;
-    // console.log(query);
-    // return this.userService.findAll(query);
+  @Get()
+  @Version('1')
+  @ApiOperation({
+    summary: 'Pencarian user secara handal',
+    description: `Dalam api ini bisa:\n
+        1. Mencari data field\n
+        2. Menampilkan beberapa field (data yang dibutuhkan, Multiple) ex:username\n
+        3. Sorting (ASC/DESC ,Multiple field) ex:-created_at\n
+        4. Pagination \n`,
+    externalDocs: {
+      url: 'http://localhost:3001/user?username[regex]=hanafi&page=1&limit=10&fields=username,role&sort=-username',
+      description: `
+        Ex: pencarian handal. \n
+        1. filds[regex]=value -> mencari string di suatu field yang mengandung kata dari value(case in sensitive) ex:username[regex]=hanafi\n
+        2. filds[in]=value -> mencari sebuah string dalam filed yang bertipe array string\n
+        3. filds[eq]=value -> mencari sebuah kata yang sama dengan value pada fild yang di cari(case Sensitive)\n
+        4. fileds[ne]=value -> mencari data yang tidak sama dengan value pada sebuah field\n
+        5. fields[or]=value -> mengkombine beberapa filed untuk mencari data tertentu
+      `,
+    },
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sort', required: false, type: String })
+  @ApiQuery({ name: 'fields', required: false, type: String })
+  @ApiBadRequestResponse({ type: ErrorBadRequestExecption })
+  @ApiOkResponse({ type: Pagination })
+  findAll(@Query() query: any) {
+    return this.userService.findAll(query);
   }
 
-  @ApiExcludeEndpoint()
+  @Version('1')
+  @ApiOperation({ summary: 'mendapatkan satu user' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'id yang di gunakan untuk paramester harus mongo id',
+  })
+  @ApiOkResponse({ type: UserResSuccesCreate })
+  @ApiBadRequestResponse({ type: ErrorBadRequestExecption })
+  @ApiNotFoundResponse({ type: ErrorNotFoundExeption })
   @Get('/:id')
   findOne(@Param('id', MongoIdValidationPipe) id: string) {
     return this.userService.findOne(id);
   }
 
-  @ApiExcludeEndpoint()
-  @Patch('update/:id')
+  @Version('1')
+  @Patch('/:id')
+  @ApiOperation({ summary: 'update satu user' })
+  @ApiOkResponse({ type: UserResSuccesCreate })
+  @ApiBadRequestResponse({ type: ErrorBadRequestExecption })
+  @ApiNotFoundResponse({ type: ErrorNotFoundExeption })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'id yang di gunakan untuk paramester harus mongo id',
+  })
   update(
     @Param('id', MongoIdValidationPipe) userId: string,
     @Payload() updateUserDto: UpdateUserDto,
@@ -75,9 +126,25 @@ export class UserController {
     return this.userService.update(userId, updateUserDto);
   }
 
-  @ApiExcludeEndpoint()
-  @Delete('delete/:id')
-  remove(@Param('id', MongoIdValidationPipe) id: string) {
-    return this.userService.remove(id);
+  @Version('1')
+  @ApiOperation({ summary: 'menghapus satu user' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'id yang di gunakan untuk paramester harus mongo id',
+  })
+  @ApiBadRequestResponse({ type: ErrorBadRequestExecption })
+  @ApiOkResponse({ type: DeletingData })
+  @ApiNotFoundResponse({ type: ErrorNotFoundExeption })
+  @Delete(':id')
+  async remove(
+    @Res() response: Response,
+    @Param('id', MongoIdValidationPipe) id: string,
+  ) {
+    this.userService.remove(id);
+    return response.status(200).json({
+      message: 'Berhasil menghapus data',
+      statuCode: 200,
+    });
   }
 }

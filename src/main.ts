@@ -26,7 +26,6 @@ async function bootstrap() {
   const swaggerConfig: any = configService.get<any>('swagger.config');
   const swaggerPath = swaggerConfig.documentationPath;
 
-  let swaggerUrl: string;
   if (swaggerConfig.swaggerUI === true) {
     app.use(
       [`${swaggerPath}`, `${swaggerConfig.documentationJson}`],

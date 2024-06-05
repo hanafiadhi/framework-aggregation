@@ -1,17 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
-  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
-  IsInt,
-  IsMongoId,
   IsNotEmpty,
-  IsObject,
   IsString,
   MaxLength,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 export class CreateUserDto {
   @ApiProperty({
@@ -21,8 +15,8 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  @MinLength(10)
-  @MaxLength(13)
+  @MinLength(4)
+  @MaxLength(100)
   username: string;
 
   @ApiProperty({
@@ -41,7 +35,8 @@ export class CreateUserDto {
     minimum: 8,
   })
   @IsNotEmpty()
-  @MinLength(8)
+  @MinLength(4)
+  @MaxLength(100)
   password: string;
 
   @ApiProperty({

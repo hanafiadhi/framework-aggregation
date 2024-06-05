@@ -2,7 +2,6 @@ import {
   CanActivate,
   ExecutionContext,
   Inject,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -26,7 +25,7 @@ export class AuthGuard implements CanActivate {
         tap((res) => {
           this.addUser(res, context);
         }),
-        catchError((e) => {
+        catchError(() => {
           throw new UnauthorizedException();
         }),
       );

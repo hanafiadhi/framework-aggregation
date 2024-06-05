@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { firstValueFrom } from 'rxjs';
 import { USER_QUEUE } from 'src/common/constants/services';
 import { ClientProxy } from '@nestjs/microservices';
-import { QueryUserListZodDTO } from './dto/query-user.zod.dto';
 
 @Injectable()
 export class UserService {
@@ -16,7 +15,7 @@ export class UserService {
     return user;
   }
 
-  async findAll(payload: QueryUserListZodDTO) {
+  async findAll(payload: any) {
     const getListUser = await firstValueFrom(
       this.clientUser.send('get-user-list', payload),
     );
@@ -27,6 +26,7 @@ export class UserService {
     const getUser = await firstValueFrom(
       this.clientUser.send('get-user', userId),
     );
+    if (!getUser) throw new NotFoundException('Data tidak ditemukan');
     return getUser;
   }
 
@@ -41,6 +41,8 @@ export class UserService {
     const deleteUser = await firstValueFrom(
       this.clientUser.send('delete-user', userId),
     );
-    return deleteUser;
+    if (deleteUser.deleted == 0)
+      throw new NotFoundException('Data tidak ditemukan');
+    return;
   }
 }
