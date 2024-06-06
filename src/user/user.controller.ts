@@ -41,8 +41,8 @@ import {
   Pagination,
 } from '../common/swagger/api/respone/response.success';
 
-// @ApiBearerAuth('jwt')
-// @UseGuards(AccessTokenGuard)
+@ApiBearerAuth('jwt')
+@UseGuards(AccessTokenGuard)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
