@@ -41,8 +41,8 @@ import {
   Pagination,
 } from '../common/swagger/api/respone/response.success';
 
-@ApiBearerAuth('jwt')
-@UseGuards(AccessTokenGuard)
+// @ApiBearerAuth('jwt')
+// @UseGuards(AccessTokenGuard)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -141,10 +141,16 @@ export class UserController {
     @Res() response: Response,
     @Param('id', MongoIdValidationPipe) id: string,
   ) {
-    this.userService.remove(id);
+    await this.userService.remove(id);
     return response.status(200).json({
       message: 'Berhasil menghapus data',
       statuCode: 200,
     });
+  }
+
+  @Version('1')
+  @Post('health')
+  async health() {
+    return true;
   }
 }

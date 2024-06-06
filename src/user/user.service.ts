@@ -41,8 +41,8 @@ export class UserService {
     const deleteUser = await firstValueFrom(
       this.clientUser.send('delete-user', userId),
     );
+
     if (deleteUser.deleted == 0)
       throw new NotFoundException('Data tidak ditemukan');
-    return;
   }
 }
