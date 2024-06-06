@@ -50,8 +50,6 @@ export class UserController {
 
   create(@ActiveUser() user: any) {
     return user;
-    // console.log(createUserDto);
-    // return this.userService.create(createUserDto);
   }
   @Version('1')
   @ApiOperation({ summary: 'membuat user' })
