@@ -43,14 +43,14 @@ import { RoleGuard } from '../guard/role.guard';
 import { Role } from '../decorator/roles.decorator';
 import { Roles } from '../common/enum/role.enum';
 
-// @ApiBearerAuth('jwt')
-// @UseGuards(AccessTokenGuard, RoleGuard)
+@ApiBearerAuth('jwt')
+@UseGuards(AccessTokenGuard, RoleGuard)
+@Role(Roles.ROOT)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({ summary: 'membuat user' })
   @ApiCreatedResponse({ type: UserResSuccesCreate })
@@ -61,7 +61,6 @@ export class UserController {
   }
 
   @Get()
-  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({
     summary: 'Pencarian user secara handal',
@@ -92,7 +91,6 @@ export class UserController {
     return this.userService.findAll(query);
   }
 
-  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({ summary: 'mendapatkan satu user' })
   @ApiParam({
@@ -108,7 +106,6 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Role(Roles.ROOT)
   @Version('1')
   @Patch('/:id')
   @ApiOperation({ summary: 'update satu user' })
@@ -127,7 +124,6 @@ export class UserController {
     return this.userService.update(userId, updateUserDto);
   }
 
-  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({ summary: 'menghapus satu user' })
   @ApiParam({
