@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import Configs from 'src/common/configs/index';
 import { RmqModule } from './providers/queue/rabbitmq/rmq.module';
 import { UserModule } from './user/user.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   controllers: [],
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
     }),
     RmqModule,
     UserModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

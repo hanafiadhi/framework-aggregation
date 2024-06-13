@@ -29,7 +29,6 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { ActiveUser } from 'src/decorator/active-user.decorator';
 import { UserResSuccesCreate } from '../common/swagger/api/respone/user.respone';
 import {
   ErrorBadRequestExecption,
@@ -40,17 +39,18 @@ import {
   DeletingData,
   Pagination,
 } from '../common/swagger/api/respone/response.success';
+import { RoleGuard } from '../guard/role.guard';
+import { Role } from '../decorator/roles.decorator';
+import { Roles } from '../common/enum/role.enum';
 
-@ApiBearerAuth('jwt')
-@UseGuards(AccessTokenGuard)
+// @ApiBearerAuth('jwt')
+// @UseGuards(AccessTokenGuard, RoleGuard)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  create(@ActiveUser() user: any) {
-    return user;
-  }
+  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({ summary: 'membuat user' })
   @ApiCreatedResponse({ type: UserResSuccesCreate })
@@ -61,6 +61,7 @@ export class UserController {
   }
 
   @Get()
+  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({
     summary: 'Pencarian user secara handal',
@@ -91,6 +92,7 @@ export class UserController {
     return this.userService.findAll(query);
   }
 
+  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({ summary: 'mendapatkan satu user' })
   @ApiParam({
@@ -106,6 +108,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @Role(Roles.ROOT)
   @Version('1')
   @Patch('/:id')
   @ApiOperation({ summary: 'update satu user' })
@@ -124,6 +127,7 @@ export class UserController {
     return this.userService.update(userId, updateUserDto);
   }
 
+  @Role(Roles.ROOT)
   @Version('1')
   @ApiOperation({ summary: 'menghapus satu user' })
   @ApiParam({
@@ -144,11 +148,5 @@ export class UserController {
       message: 'Berhasil menghapus data',
       statuCode: 200,
     });
-  }
-
-  @Version('1')
-  @Post('health')
-  async health() {
-    return true;
   }
 }
