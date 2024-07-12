@@ -1,14 +1,16 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { firstValueFrom } from 'rxjs';
-import { USER_QUEUE } from 'src/common/constants/services';
+
 import { ClientProxy } from '@nestjs/microservices';
+import { USER_QUEUE } from '../common/constants/services';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(USER_QUEUE) private readonly clientUser: ClientProxy) {}
 
   async create(createUserDto: any) {
+    createUserDto.is_active = true;
     const user = await firstValueFrom(
       this.clientUser.send('create-user', createUserDto),
     );

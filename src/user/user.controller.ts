@@ -15,9 +15,7 @@ import { Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { MongoIdValidationPipe } from 'src/pipes/validator/mongoid.validator';
 
-import { AccessTokenGuard } from 'src/guard/acccess-token.guard';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -42,6 +40,8 @@ import {
 import { RoleGuard } from '../guard/role.guard';
 import { Role } from '../decorator/roles.decorator';
 import { Roles } from '../common/enum/role.enum';
+import { AccessTokenGuard } from '../guard/acccess-token.guard';
+import { MongoIdValidationPipe } from '../pipes/validator/mongoid.validator';
 
 @ApiBearerAuth('jwt')
 @UseGuards(AccessTokenGuard, RoleGuard)

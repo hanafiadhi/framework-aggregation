@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { AUTH_QUEUE } from 'src/common/constants/services';
+
 import { Request } from 'express';
+import { AUTH_QUEUE } from '../common/constants/services';
 
 export class AccessTokenGuard implements CanActivate {
   constructor(@Inject(AUTH_QUEUE) private readonly client: ClientProxy) {}

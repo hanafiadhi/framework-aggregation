@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import Configs from 'src/common/configs/index';
+import AppConfig from './common/configs/index';
 import { RmqModule } from './providers/queue/rabbitmq/rmq.module';
 import { UserModule } from './user/user.module';
 import { HealthModule } from './health/health.module';
@@ -10,7 +10,7 @@ import { HealthModule } from './health/health.module';
   providers: [],
   imports: [
     ConfigModule.forRoot({
-      load: Configs,
+      load: AppConfig,
       ignoreEnvFile: false,
       isGlobal: true,
       cache: true,
