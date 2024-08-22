@@ -42,10 +42,12 @@ import { Role } from '../decorator/roles.decorator';
 import { Roles } from '../common/enum/role.enum';
 import { AccessTokenGuard } from '../guard/acccess-token.guard';
 import { MongoIdValidationPipe } from '../pipes/validator/mongoid.validator';
+import { ResendOrVerif } from './dto/resend-or-verifikasi.dto';
+import { ActiveUser } from '../decorator/active-user.decorator';
 
 @ApiBearerAuth('jwt')
-@UseGuards(AccessTokenGuard, RoleGuard)
-@Role(Roles.ROOT)
+@UseGuards(AccessTokenGuard)
+// @Role(Roles.ROOT,Ro÷)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -144,5 +146,23 @@ export class UserController {
       message: 'Berhasil menghapus data',
       statuCode: 200,
     });
+  }
+
+  @Patch('/change-whatsapp')
+  async sendTokenOtp(
+    @Res() response: Response,
+    @Body() { whatsapp, otp }: ResendOrVerif,
+    @ActiveUser() { sub }: any,
+  ) {
+    try {
+      const responses = await this.userService.resendAndChangeWhatsapp(
+        sub,
+        whatsapp,
+        otp,
+      );
+      response.status(responses['statusCode']).json(responses).end();
+    } catch (error) {
+      response.status(error.statusCode).json(error).end();
+    }
   }
 }

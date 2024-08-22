@@ -47,4 +47,19 @@ export class UserService {
     if (deleteUser.deleted == 0)
       throw new NotFoundException('Data tidak ditemukan');
   }
+
+  async resendAndChangeWhatsapp(sub: string, whatsapp: string, otp?: string) {
+    const payload: { _id: string; whatsapp?: string; token?: string } = {
+      _id: sub,
+      ...(whatsapp && {
+        whatsapp,
+      }),
+      ...(otp && {
+        otp,
+      }),
+    };
+    return await firstValueFrom(
+      this.clientUser.send('change-whatsapp-user', payload),
+    );
+  }
 }
