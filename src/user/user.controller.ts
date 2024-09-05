@@ -56,6 +56,72 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Version('1')
+  @ApiOperation({ summary: 'Generate OTP for changing WhatsApp number' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'OTP generated successfully or WhatsApp number updated successfully',
+    schema: {
+      example: {
+        statusCode: HttpStatus.OK,
+        message:
+          'berhasil generate code otp' ||
+          'Silahkan login dengan nomor whatsapp terbaru',
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Nomor WhatsApp masih sama with the current one',
+    schema: {
+      example: {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'nomor whatsapp masih sama',
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    description: 'OTP is either banned, expired, or incorrect',
+    schema: {
+      example: {
+        statusCode: HttpStatus.NOT_ACCEPTABLE,
+        message: 'kode otp sudah expired' || 'kode otp salah',
+        date_banned: 1672545600000,
+        banned: 'Silahkan coba lagi',
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'WhatsApp number already in use, prompt user to check messages',
+    schema: {
+      example: {
+        statusCode: HttpStatus.OK,
+        message: 'jika whatsapp aktif, Silahkan cek Pesan',
+      },
+    },
+  })
+  @Patch('/change-whatsapp')
+  async sendTokenOtp(
+    @Body() { whatsapp, otp }: ResendOrVerif,
+    @ActiveUser() { sub }: any,
+    @Res() response: Response,
+  ) {
+    try {
+      const responses = await this.userService.resendAndChangeWhatsapp(
+        sub,
+        whatsapp,
+        otp,
+      );
+      response.status(responses['statusCode']).json(responses).end();
+    } catch (error) {
+      response.status(error.statusCode).json(error).end();
+    }
+  }
+
+  @Version('1')
   @ApiOperation({ summary: 'membuat user' })
   @ApiCreatedResponse({ type: UserResSuccesCreate })
   @ApiBadRequestResponse({ type: ErrorBadRequestExecption })
@@ -148,71 +214,5 @@ export class UserController {
       message: 'Berhasil menghapus data',
       statuCode: 200,
     });
-  }
-
-  @Version('1')
-  @ApiOperation({ summary: 'Generate OTP for changing WhatsApp number' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'OTP generated successfully or WhatsApp number updated successfully',
-    schema: {
-      example: {
-        statusCode: HttpStatus.OK,
-        message:
-          'berhasil generate code otp' ||
-          'Silahkan login dengan nomor whatsapp terbaru',
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Nomor WhatsApp masih sama with the current one',
-    schema: {
-      example: {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'nomor whatsapp masih sama',
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_ACCEPTABLE,
-    description: 'OTP is either banned, expired, or incorrect',
-    schema: {
-      example: {
-        statusCode: HttpStatus.NOT_ACCEPTABLE,
-        message: 'kode otp sudah expired' || 'kode otp salah',
-        date_banned: 1672545600000,
-        banned: 'Silahkan coba lagi',
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'WhatsApp number already in use, prompt user to check messages',
-    schema: {
-      example: {
-        statusCode: HttpStatus.OK,
-        message: 'jika whatsapp aktif, Silahkan cek Pesan',
-      },
-    },
-  })
-  @Patch('/change-whatsapp')
-  async sendTokenOtp(
-    @Res() response: Response,
-    @Body() { whatsapp, otp }: ResendOrVerif,
-    @ActiveUser() { sub }: any,
-  ) {
-    try {
-      const responses = await this.userService.resendAndChangeWhatsapp(
-        sub,
-        whatsapp,
-        otp,
-      );
-      response.status(responses['statusCode']).json(responses).end();
-    } catch (error) {
-      response.status(error.statusCode).json(error).end();
-    }
   }
 }
